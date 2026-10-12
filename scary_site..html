@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ошибка</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    background: #000; color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    overflow: hidden;
+    display: flex; justify-content: center; align-items: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+    overscroll-behavior: none;
+  }
+  #countdown {
+    font-size: 25vw; font-weight: bold;
+    color: #fff; text-shadow: 0 0 20px #f00;
+    z-index: 10;
+  }
+  #error-screen {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    width: 100%; height: 100%;
+    background: #1a1a1a;
+    z-index: 20;
+  }
+  .error-icon { font-size: 80px; margin-bottom: 20px; color: #ff5555; }
+  .error-title { font-size: 22px; font-weight: bold; margin-bottom: 10px; }
+  .error-text { font-size: 16px; color: #aaa; margin-bottom: 40px; }
+  .fix-button {
+    background: #3ddc84; color: #000; border: none; border-radius: 4px;
+    padding: 14px 40px; font-size: 18px; font-weight: bold;
+    text-transform: uppercase; cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  }
+  .fix-button:active { transform: scale(0.95); }
+
+  #screamer {
+    display: none;
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: #000;
+    z-index: 100;
+    justify-content: center; align-items: center;
+    overflow: hidden;
+  }
+  #screamer.active {
+    display: flex;
+    animation: violentShake 0.05s infinite;
+  }
+  #faceWrap {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    animation: facePulse 0.08s infinite alternate;
+  }
+  #faceWrap svg { width: 100%; height: 100%; display: block; }
+
+  .flash {
+    position: absolute; inset: 0;
+    background: #ff0000;
+    opacity: 0;
+    pointer-events: none;
+    animation: flashAnim 0.3s infinite;
+  }
+  @keyframes flashAnim {
+    0%   { opacity: 0; }
+    10%  { opacity: 0.85; }
+    20%  { opacity: 0; }
+    35%  { opacity: 0.7; background:#ffffff; }
+    45%  { opacity: 0; }
+    70%  { opacity: 0.9; background:#ff0000; }
+    80%  { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  @keyframes violentShake {
+    0%   { transform: translate(0,0) rotate(0deg); }
+    20%  { transform: translate(-8px,4px) rotate(-1deg); }
+    40%  { transform: translate(7px,-6px) rotate(1deg); }
+    60%  { transform: translate(-6px,-5px) rotate(-0.6deg); }
+    80%  { transform: translate(8px,6px) rotate(0.8deg); }
+    100% { transform: translate(0,0) rotate(0deg); }
+  }
+  @keyframes facePulse {
+    from { transform: scale(1); filter: contrast(1.2) saturate(1.4); }
+    to   { transform: scale(1.06); filter: contrast(1.6) saturate(1.8) hue-rotate(-10deg); }
+  }
+</style>
+</head>
+<body>
+  <div id="countdown">10</div>
+
+  <div id="error-screen">
+    <div class="error-icon">⚠️</div>
+    <div class="error-title">Произошла ошибка в приложении</div>
+    <div class="error-text">Приложение не отвечает. Попробуйте исправить.</div>
+    <button class="fix-button" id="fixBtn">Починить</button>
+  </div>
+
+  <div id="screamer">
+    <div id="faceWrap">
+      <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="skin" cx="50%" cy="45%" r="70%">
+            <stop offset="0%" stop-color="#d9c7b8"/>
+            <stop offset="60%" stop-color="#a8917f"/>
+            <stop offset="100%" stop-color="#3a2a20"/>
+          </radialGradient>
+          <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ff1a1a"/>
+            <stop offset="55%" stop-color="#7a0000"/>
+            <stop offset="100%" stop-color="#000"/>
+          </radialGradient>
+          <radialGradient id="mouthGrad" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#3a0000"/>
+            <stop offset="100%" stop-color="#000"/>
+          </radialGradient>
+        </defs>
+
+        <rect width="400" height="400" fill="#000"/>
+        <ellipse cx="200" cy="210" rx="135" ry="165" fill="url(#skin)"/>
+        <ellipse cx="200" cy="120" rx="120" ry="70" fill="#000" opacity="0.35"/>
+        <ellipse cx="200" cy="380" rx="150" ry="60" fill="#000" opacity="0.7"/>
+
+        <ellipse cx="140" cy="175" rx="42" ry="34" fill="#1a0000"/>
+        <ellipse cx="260" cy="175" rx="42" ry="34" fill="#1a0000"/>
+
+        <circle cx="140" cy="175" r="26" fill="url(#eyeGlow)"/>
+        <circle cx="260" cy="175" r="26" fill="url(#eyeGlow)"/>
+        <circle cx="140" cy="175" r="6" fill="#000"/>
+        <circle cx="260" cy="175" r="6" fill="#000"/>
+        <circle cx="134" cy="168" r="3" fill="#fff" opacity="0.8"/>
+        <circle cx="254" cy="168" r="3" fill="#fff" opacity="0.8"/>
+
+        <path d="M140 200 Q138 240 145 280 Q148 300 142 320" stroke="#8a0000" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M260 200 Q262 245 256 285 Q253 305 258 325" stroke="#8a0000" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M128 205 Q126 230 130 255" stroke="#5a0000" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path d="M272 205 Q274 235 270 260" stroke="#5a0000" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+        <path d="M200 200 L192 250 Q200 258 208 250 Z" fill="#5a4030" opacity="0.8"/>
+        <ellipse cx="192" cy="252" rx="4" ry="3" fill="#000"/>
+        <ellipse cx="208" cy="252" rx="4" ry="3" fill="#000"/>
+
+        <ellipse cx="200" cy="310" rx="60" ry="55" fill="url(#mouthGrad)"/>
+        <path d="M150 280 L158 305 L166 280 L174 305 L182 280 L190 305 L198 280 L206 305 L214 280 L222 305 L230 280 L238 305 L246 280 L250 288 L150 288 Z" fill="#e8d8c0"/>
+        <path d="M155 340 L163 320 L171 340 L179 320 L187 340 L195 320 L203 340 L211 320 L219 340 L227 320 L235 340 L243 320 L248 335 L152 335 Z" fill="#e8d8c0"/>
+        <ellipse cx="200" cy="335" rx="35" ry="18" fill="#5a0000"/>
+
+        <path d="M100 130 Q120 150 110 190" stroke="#2a1a10" stroke-width="2" fill="none" opacity="0.6"/>
+        <path d="M300 130 Q280 150 290 190" stroke="#2a1a10" stroke-width="2" fill="none" opacity="0.6"/>
+        <path d="M120 90 Q160 70 200 75" stroke="#2a1a10" stroke-width="2" fill="none" opacity="0.5"/>
+        <path d="M280 90 Q240 70 200 75" stroke="#2a1a10" stroke-width="2" fill="none" opacity="0.5"/>
+
+        <circle cx="90" cy="200" r="4" fill="#8a0000"/>
+        <circle cx="310" cy="220" r="5" fill="#8a0000"/>
+        <circle cx="70" cy="280" r="3" fill="#8a0000"/>
+        <circle cx="330" cy="300" r="4" fill="#8a0000"/>
+        <circle cx="110" cy="360" r="3" fill="#8a0000"/>
+        <circle cx="290" cy="370" r="5" fill="#8a0000"/>
+
+        <text x="200" y="395" font-size="14" fill="#ff0000" text-anchor="middle" font-family="Arial" opacity="0.85">ТЫ СЛЕДУЮЩИЙ</text>
+      </svg>
+    </div>
+    <div class="flash"></div>
+    <div class="flash" style="animation-delay:0.15s; background:#ffffff;"></div>
+  </div>
+
+<script>
+  // ============ ЗАЩИТА ОТ ЗАКРЫТИЯ ============
+  // 1) Не даём закрыть/перезагрузить вкладку
+  window.addEventListener('beforeunload', (e) => {
+    e.preventDefault();
+    e.returnValue = '';
+    return '';
+  });
+
+  // 2) Блокируем кнопку "назад" — пушим историю вперёд при каждом уходе
+  history.pushState(null, null, location.href);
+  window.addEventListener('popstate', () => {
+    history.pushState(null, null, location.href);
+  });
+
+  // 3) Блокируем правый клик и долгое нажатие
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  document.addEventListener('selectstart', (e) => e.preventDefault());
+  document.addEventListener('dragstart', (e) => e.preventDefault());
+
+  // 4) Блокируем жесты "назад" свайпом (iOS/Android)
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+
+  let lastTouch = 0;
+  document.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if (now - lastTouch < 300) e.preventDefault();
+    lastTouch = now;
+  }, { passive: false });
+
+  // 5) Не даём выйти из полноэкранного режима по Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' || e.key === 'F5' ||
+        (e.ctrlKey && ['w','W','r','R','n','N','t','T'].includes(e.key))) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Если вышли из фуллскрина — заходим обратно
+      if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(()=>{});
+      }
+      return false;
+    }
+  });
+
+  // 6) Следим за выходом из полноэкранного режима — возвращаем
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+      setTimeout(() => {
+        document.documentElement.requestFullscreen().catch(()=>{});
+      }, 100);
+    }
+  });
+
+  // 7) Следим за потерей фокуса вкладки — возвращаем фокус
+  window.addEventListener('blur', () => {
+    setTimeout(() => window.focus(), 50);
+  });
+
+  // ============ ОТСЧЁТ ============
+  let count = 10;
+  const countdownEl = document.getElementById('countdown');
+  const errorScreen = document.getElementById('error-screen');
+  const screamer = document.getElementById('screamer');
+  const fixBtn = document.getElementById('fixBtn');
+
+  const interval = setInterval(() => {
+    count--;
+    if (count > 0) {
+      countdownEl.textContent = count;
+    } else {
+      countdownEl.textContent = '0';
+      clearInterval(interval);
+      setTimeout(() => {
+        countdownEl.style.display = 'none';
+        errorScreen.style.display = 'flex';
+      }, 500);
+    }
+  }, 1000);
+
+  // ============ ЗВУК ============
+  function playScream() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    if (ctx.state === 'suspended') ctx.resume();
+
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(1.0, ctx.currentTime);
+    master.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 3);
+    master.connect(ctx.destination);
+
+    const bufferSize = ctx.sampleRate * 3;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const nf = ctx.createBiquadFilter();
+    nf.type = 'bandpass';
+    nf.frequency.value = 1500;
+    nf.Q.value = 0.4;
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(1.0, ctx.currentTime);
+    ng.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 3);
+    noise.connect(nf); nf.connect(ng); ng.connect(master);
+    noise.start();
+
+    const osc1 = ctx.createOscillator();
+    osc1.type = 'sawtooth';
+    osc1.frequency.setValueAtTime(1400, ctx.currentTime);
+    osc1.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 2.5);
+    const og1 = ctx.createGain();
+    og1.gain.setValueAtTime(0.9, ctx.currentTime);
+    og1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.8);
+    osc1.connect(og1); og1.connect(master);
+    osc1.start(); osc1.stop(ctx.currentTime + 3);
+
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(2200, ctx.currentTime);
+    osc2.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 2);
+    const og2 = ctx.createGain();
+    og2.gain.setValueAtTime(0.6, ctx.currentTime);
+    og2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.5);
+    osc2.connect(og2); og2.connect(master);
+    osc2.start(); osc2.stop(ctx.currentTime + 3);
+
+    const osc3 = ctx.createOscillator();
+    osc3.type = 'sine';
+    osc3.frequency.setValueAtTime(60, ctx.currentTime);
+    osc3.frequency.linearRampToValueAtTime(40, ctx.currentTime + 2.5);
+    const og3 = ctx.createGain();
+    og3.gain.setValueAtTime(0.7, ctx.currentTime);
+    og3.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 3);
+    osc3.connect(og3); og3.connect(master);
+    osc3.start(); osc3.stop(ctx.currentTime + 3);
+
+    if (navigator.vibrate) {
+      navigator.vibrate([300,50,300,50,300,50,600,100,600]);
+    }
+  }
+
+  // ============ ЗАПУСК СКРИМЕРА ============
+  fixBtn.addEventListener('click', () => {
+    errorScreen.style.display = 'none';
+    screamer.style.display = 'flex';
+    screamer.classList.add('active');
+    playScream();
+
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen().catch(()=>{});
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  });
+</script>
+</body>
+</html>
